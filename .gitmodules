@@ -1,0 +1,12 @@
+[submodule "libs/Adafruit_NeoPixel"]
+	path = libs/Adafruit_NeoPixel
+	url = https://github.com/adafruit/Adafruit_NeoPixel.git
+[submodule "libs/Adafruit_LED_Backpack"]
+	path = libs/Adafruit_LED_Backpack
+	url = https://github.com/adafruit/Adafruit_LED_Backpack.git
+[submodule "libs/Adafruit-GFX-Library"]
+	path = libs/Adafruit-GFX-Library
+	url = https://github.com/adafruit/Adafruit-GFX-Library.git
+[submodule "libs/Bounce2"]
+	path = libs/Bounce2
+	url = https://github.com/thomasfredericks/Bounce2
