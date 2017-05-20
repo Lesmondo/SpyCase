@@ -15,6 +15,15 @@
 #define PIXELPIN 8
 #define CITIESPIN 13
 
+
+//Cities
+#define LONDON 0
+#define NEWYORK 1
+#define LIMA 2
+#define PERTH 3
+#define TOKYO 4 
+#define NAIROBI 5
+
 /*
  * Globals
  */
@@ -47,7 +56,17 @@ void setup() {
     ring.RainbowCycle(2);
 
     cities.begin();
-    cities.RainbowCycle(2);
+    cities.Hide(LONDON);
+    cities.Hide(NEWYORK);
+    cities.Hide(LIMA);
+    cities.Hide(PERTH);
+    cities.Hide(TOKYO);
+    cities.Hide(NAIROBI);
+    
+    cities.Fade(NeoPatterns::Color(255, 0, 0),NeoPatterns::Color(0,0,0), 5, 100);
+
+    cities.Show(LONDON);
+    cities.Show(PERTH);
 
     
     
