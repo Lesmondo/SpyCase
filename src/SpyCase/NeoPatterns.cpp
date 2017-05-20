@@ -9,7 +9,62 @@
 // Constructor - calls base-class constructor to initialize strip
 NeoPatterns::NeoPatterns(uint16_t pixels, uint8_t pin, uint8_t type, void (*callback)()):Adafruit_NeoPixel(pixels, pin, type)
 {
-  OnComplete = callback;
+  updateMaskLength(pixels);
+  if( callback != NULL ) {
+    OnComplete = callback;
+  } 
+}
+
+
+
+//Borrowed from base class
+void NeoPatterns::updateMaskLength(uint16_t n) {
+  if(mask) free(mask); // Free existing data (if any)
+
+  if((mask = (uint8_t *)malloc(n))) {
+    memset(mask, 1, n);
+  } else {
+    mask = 0;
+  }
+}
+
+
+void NeoPatterns::Hide(uint16_t n) {
+  mask[n] = 1;
+}
+void NeoPatterns::Show(uint16_t n) {
+  mask[n] = 0;
+}
+
+void NeoPatterns::setPixelColorMasked(uint16_t n, uint8_t r, uint8_t g, uint8_t b) {
+  if(mask[n] == 0 ) 
+  {
+    setPixelColor(n,r,g,b);
+  }
+  else
+  {
+    setPixelColor(n,0,0,0);
+  }
+}
+void NeoPatterns::setPixelColorMasked(uint16_t n, uint8_t r, uint8_t g, uint8_t b, uint8_t w) { 
+  if(mask[n] == 0 ) 
+  {
+    setPixelColor(n,r,g,b,w);
+  }
+  else
+  {
+    setPixelColor(n,0,0,0,0);
+  }
+}
+void NeoPatterns::setPixelColorMasked(uint16_t n, uint32_t c) {
+  if(mask[n] == 0 ) 
+  {
+    setPixelColor(n,c);
+  }
+  else
+  {
+    setPixelColor(n,0,0,0);
+  }
 }
 
 // Update the pattern
@@ -85,6 +140,7 @@ void NeoPatterns::Reverse()
     }
 }
 
+
 // Initialize for a RainbowCycle
 void NeoPatterns::RainbowCycle(uint8_t interval, direction dir)
 {
@@ -100,7 +156,7 @@ void NeoPatterns::RainbowCycleUpdate()
 {
     for(int i=0; i< numPixels(); i++)
     {
-        setPixelColor(i, Wheel(((i * 256 / numPixels()) + Index) & 255));
+        setPixelColorMasked(i, Wheel(((i * 256 / numPixels()) + Index) & 255));
     }
     show();
     Increment();
@@ -125,11 +181,11 @@ void NeoPatterns::TheaterChaseUpdate()
     {
         if ((i + Index) % 3 == 0)
         {
-            setPixelColor(i, Color1);
+            setPixelColorMasked(i, Color1);
         }
         else
         {
-            setPixelColor(i, Color2);
+            setPixelColorMasked(i, Color2);
         }
     }
     show();
@@ -150,7 +206,7 @@ void NeoPatterns::ColorWipe(uint32_t color, uint8_t interval, direction dir)
 // Update the Color Wipe Pattern
 void NeoPatterns::ColorWipeUpdate()
 {
-    setPixelColor(Index, Color1);
+    setPixelColorMasked(Index, Color1);
     show();
     Increment();
 }
@@ -172,15 +228,15 @@ void NeoPatterns::ScannerUpdate()
     {
         if (i == Index)  // Scan Pixel to the right
         {
-             setPixelColor(i, Color1);
+             setPixelColorMasked(i, Color1);
         }
         else if (i == TotalSteps - Index) // Scan Pixel to the left
         {
-             setPixelColor(i, Color1);
+             setPixelColorMasked(i, Color1);
         }
         else // Fading tail
         {
-             setPixelColor(i, DimColor(getPixelColor(i)));
+             setPixelColorMasked(i, DimColor(getPixelColor(i)));
         }
     }
     show();
@@ -213,6 +269,11 @@ void NeoPatterns::FadeUpdate()
     Increment();
 }
 
+
+
+
+
+
 // Calculate 50% dimmed version of a color (used by ScannerUpdate)
 uint32_t NeoPatterns::DimColor(uint32_t color)
 {
@@ -226,7 +287,7 @@ void NeoPatterns::ColorSet(uint32_t color)
 {
     for (int i = 0; i < numPixels(); i++)
     {
-        setPixelColor(i, color);
+        setPixelColorMasked(i, color);
     }
     show();
 }
