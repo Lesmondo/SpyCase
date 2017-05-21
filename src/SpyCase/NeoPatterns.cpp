@@ -22,7 +22,7 @@ void NeoPatterns::updateMaskLength(uint16_t n) {
   if(mask) free(mask); // Free existing data (if any)
 
   if((mask = (uint8_t *)malloc(n))) {
-    memset(mask, 1, n);
+    memset(mask, 0, n);
   } else {
     mask = 0;
   }
@@ -32,10 +32,19 @@ void NeoPatterns::updateMaskLength(uint16_t n) {
 void NeoPatterns::Hide(uint16_t n) {
   mask[n] = 1;
 }
+void NeoPatterns::HideAll() {
+  for(int i=0; i< numPixels(); i++) {
+    Hide(i);
+  }
+}
 void NeoPatterns::Show(uint16_t n) {
   mask[n] = 0;
 }
-
+void NeoPatterns::ShowAll() {
+  for(int i=0; i< numPixels(); i++) {
+    Show(i);
+  }
+}
 void NeoPatterns::setPixelColorMasked(uint16_t n, uint8_t r, uint8_t g, uint8_t b) {
   if(mask[n] == 0 ) 
   {
@@ -68,7 +77,7 @@ void NeoPatterns::setPixelColorMasked(uint16_t n, uint32_t c) {
 }
 
 // Update the pattern
-void NeoPatterns::Update()
+void NeoPatterns::update()
 {
     if((millis() - lastUpdate) > Interval) // time to update
     {
@@ -105,10 +114,12 @@ void NeoPatterns::Increment()
        if (Index >= TotalSteps)
         {
             Index = 0;
+            
             if (OnComplete != NULL)
             {
-                OnComplete(); // call the comlpetion callback
+               OnComplete(); // call the comlpetion callback
             }
+            
         }
     }
     else // Direction == REVERSE
@@ -117,10 +128,12 @@ void NeoPatterns::Increment()
         if (Index <= 0)
         {
             Index = TotalSteps-1;
+            
             if (OnComplete != NULL)
             {
                 OnComplete(); // call the comlpetion callback
             }
+            
         }
     }
 }
@@ -142,7 +155,7 @@ void NeoPatterns::Reverse()
 
 
 // Initialize for a RainbowCycle
-void NeoPatterns::RainbowCycle(uint8_t interval, direction dir)
+void NeoPatterns::RainbowCycle(uint16_t interval, direction dir)
 {
     ActivePattern = RAINBOW_CYCLE;
     Interval = interval;
@@ -163,7 +176,7 @@ void NeoPatterns::RainbowCycleUpdate()
 }
 
 // Initialize for a Theater Chase
-void NeoPatterns::TheaterChase(uint32_t color1, uint32_t color2, uint8_t interval, direction dir)
+void NeoPatterns::TheaterChase(uint32_t color1, uint32_t color2, uint16_t interval, direction dir)
 {
     ActivePattern = THEATER_CHASE;
     Interval = interval;
@@ -193,7 +206,7 @@ void NeoPatterns::TheaterChaseUpdate()
 }
 
 // Initialize for a ColorWipe
-void NeoPatterns::ColorWipe(uint32_t color, uint8_t interval, direction dir)
+void NeoPatterns::ColorWipe(uint32_t color, uint16_t interval, direction dir)
 {
     ActivePattern = COLOR_WIPE;
     Interval = interval;
@@ -212,7 +225,7 @@ void NeoPatterns::ColorWipeUpdate()
 }
 
 // Initialize for a SCANNNER
-void NeoPatterns::Scanner(uint32_t color1, uint8_t interval)
+void NeoPatterns::Scanner(uint32_t color1, uint16_t interval)
 {
     ActivePattern = SCANNER;
     Interval = interval;
@@ -244,7 +257,7 @@ void NeoPatterns::ScannerUpdate()
 }
 
 // Initialize for a Fade
-void NeoPatterns::Fade(uint32_t color1, uint32_t color2, uint16_t steps, uint8_t interval, direction dir)
+void NeoPatterns::Fade(uint32_t color1, uint32_t color2, uint16_t steps, uint16_t interval, direction dir)
 {
     ActivePattern = FADE;
     Interval = interval;
@@ -268,7 +281,6 @@ void NeoPatterns::FadeUpdate()
     show();
     Increment();
 }
-
 
 
 
